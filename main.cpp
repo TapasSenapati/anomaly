@@ -8,7 +8,7 @@
 #include <sstream>
 #include <set>
 #include <unordered_map>
-
+#include <chrono>
 #include "graphcreate.h"
 #include "string.h"
 
@@ -54,7 +54,7 @@ void ged(vector<string> fileslist)
     for(string filename : fileslist)
     {
         string filepath = graphdir + "/" + filename;
-        cout << "\nfilepath.c_str() : " << filepath.c_str();
+        //cout << "\nfilepath.c_str() : " << filepath.c_str();
         ifstream infile(filepath.c_str());
         int x,y;
         if (infile.good())
@@ -121,9 +121,17 @@ void ged(vector<string> fileslist)
             }
         }
 
-        edit_distance[j] = Vg + Vh - (2*Vg_Vh) + Eg - Eh - (Eg_Eh);
+        edit_distance[j] = Vg + Vh - (2*Vg_Vh) + Eg + Eh - Eg_Eh;
         //cout << "\nVg " << Vg << " Vh " << Vh << " Vg_Vh " << Vg_Vh << " Eg " << Eg << " Eh " << Eh << " Eg_Eh " << Eg_Eh;
     }
+
+    //save results to file for plotting latter
+    // open a file in write mode.
+    ofstream outfile;
+    outfile.open("graphedit.tsv");
+    for(int j=0; j<no_graphs-1; ++j)
+        outfile << j+1 << "\t" << edit_distance[j] << endl;
+    outfile.close();
 
 }
 
@@ -192,6 +200,7 @@ int main (int argc, char *argv[])
 //    printGraph(graph);
 //    delete [] graph;
 
+    cout << "\nWait while ged is being calculated and plotted....";
     vector<string> fileslist;
     fileslist = open(graphdir); // or pass which dir to open
 
@@ -199,12 +208,17 @@ int main (int argc, char *argv[])
     no_graphs = fileslist.size();
 
     //this many graphs for which to calcuate ged and plot timeseries
-    cout << "no_graphs : " << no_graphs;
+    //cout << "no_graphs : " << no_graphs;
 
     //for(string i : fileslist)   //print llist of graph files in the directory
     //cout << i << endl;
 
+    auto start = std::chrono::high_resolution_clock::now();
     ged(fileslist);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    cout << "\nTime taken to execute the graph edit distance function : " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() << "ms.";
     return 0;
 }
 
