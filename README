@@ -1,13 +1,2 @@
 1> Use -std=c++11 while compiling
 use the makefile.
-2>install matplot from https://code.google.com/p/matplotpp/downloads/detail?name=matplotpp-0.3.13.tar.gz&can=2&q=
-
-To install a required library on ubuntu
-
-$ sudo apt-get install freeglut3-dev
-
-To compile MATPLOT++ library, type as following:
-
-$ tar xvf matplotpp-0.3.x.tar
-$ cd matplotpp
-$ make
